@@ -202,7 +202,43 @@ jobs:
       # - slack/notify:
       #     event: fail
       #     mentions: '@DevOpsTeam'
-      #     template: basic_fail_1 
+      #     template: basic_fail_1
+
+  configure-infrastructure:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "30:6b:56:37:be:1c:f5:b0:75:59:ff:19:e9:ac:68:ba"
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Install dependencies(AWSCLI AND ANSIBLE)
+          command: |
+            sudo apt update
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install          
+            sudo apt install software-properties-common -y
+            sudo add-apt-repository --yes --update ppa:ansible/ansible
+            sudo apt install ansible -y                  
+      - run:
+          name: Configure server
+          command: |
+            cd .circleci/ansible
+            cat inventory.txt
+            ansible-playbook -i inventory.txt configure-server.yml
+      # - slack/notify:
+      #     event: fail
+      #     mentions: '@DevOpsTeam'
+      #     template: basic_fail_1
+      #- slack/notify:
+       #   event: pass
+        #  mentions: '@DevOpsTeam'
+         # template: basic_success_1 
+      - destroy-environment       
 
 workflows:
   default:
