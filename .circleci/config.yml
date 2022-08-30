@@ -14,10 +14,17 @@ jobs:
             cd frontend
             npm install
             npm run build
-            exit 1
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
+      # - slack/notify:
+      #     event: fail
+      #     mentions: '@DevelopmentTeam'
+      #     template: basic_fail_1
+      # - slack/notify:
+      #     event: pass
+      #     mentions: '@DevelopmentTeam'
+      #     template: basic_success_1 
 
   build-backend:
     docker:
@@ -32,12 +39,122 @@ jobs:
             cd backend
             npm install
             npm run build
-            exit 1
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
+      # - slack/notify:
+      #     event: fail
+      #     mentions: '@DevelopmentTeam'
+      #     template: basic_fail_1
+      # - slack/notify:
+      #     event: pass
+      #     mentions: '@DevelopmentTeam'
+      #     template: basic_success_1 
+  test-frontend:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys: [test-frontend]
+      - run:
+          name: Front-end test
+          command: |
+            cd frontend
+            npm install
+            npm run test
+      # - slack/notify:
+      #     event: fail
+      #     mentions: '@DevelopmentTeam'
+      #     template: basic_fail_1
+      #- slack/notify:
+       #   event: pass
+        #  mentions: '@DevelopmentTeam'
+        #  template: basic_success_1 
+                
+  test-backend:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys: [test-frontend]
+      - run:
+          name: Back-end test
+          command: |
+            cd backend
+            npm install
+            npm run test
+      # - slack/notify:
+      #     event: fail
+      #     mentions: '@DevelopmentTeam'
+      #     template: basic_fail_1
+      #- slack/notify:
+       #   event: pass
+         # mentions: '@DevelopmentTeam'
+         # template: basic_success_1 
+
+  scan-frontend:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys: [scan-frontend]
+      - run:
+          name: Scan front-end
+          command: |
+            cd frontend
+            npm install
+            npm audit fix --audit-level=critical --force
+            npm audit --audit-level=critical
+      - save_cache:
+          paths: [frontend/node_modules]
+          key: frontend-scan
+      # - slack/notify:
+      #     event: fail
+      #     mentions: '@DevelopmentTeam'
+      #     template: basic_fail_1
+      #- slack/notify:
+       #   event: pass
+        #  mentions: '@DevelopmentTeam'
+        #  template: basic_success_1 
+      
+  scan-backend:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys: [scan-backend]
+      - run:
+          name: Scan back-end
+          command: |
+            cd backend
+            npm install
+            npm audit fix --audit-level=critical --force
+      - save_cache:
+          paths: [backend/node_modules]
+          key: backend-scan
+      # - slack/notify:
+      #     event: fail
+      #     mentions: '@DevelopmentTeam'
+      #     template: basic_fail_1
+      #- slack/notify:
+         # event: pass
+         # mentions: '@DevelopmentTeam'
+         # template: basic_success_1     
+
 workflows:
   default:
     jobs:
       - build-frontend
       - build-backend
+      - test-frontend:
+          requires: [build-frontend]
+      - test-backend:
+          requires: [build-backend]
+      - scan-backend:
+          requires: [build-backend]
+      - scan-frontend:
+          requires: [build-frontend]
