@@ -266,7 +266,7 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      - run: apt install awscli
+      - run: sudo apt install awscli
       - run:
           name: Run migrations
           command: |
