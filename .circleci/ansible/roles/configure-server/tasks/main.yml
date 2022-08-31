@@ -18,7 +18,8 @@
 - name: "move env variables to /etc/profile.d/"
   become: true
   copy:
-    src: env.sh
+   # src: env.sh
+    src: "{{playbook_dir}}/myenv/env.sh"
     dest: /etc/profile.d/
 
 - name: "Install forever Globally to run node app"
