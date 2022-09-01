@@ -28,7 +28,7 @@ commands:
             echo ${SUCCESS}
             if(( ${SUCCESS}==1 )); 
             then
-             cd ~/project3b/backend
+             cd ~/project/backend
              npm install
              npm run migration:revert
             fi
@@ -219,7 +219,7 @@ jobs:
       - persist_to_workspace:
           root: ~/
           paths:
-            - project3b/.circleci/ansible/inventory.txt
+            - project/.circleci/ansible/inventory.txt
       # - slack/notify:
       #     event: fail
       #     mentions: '@DevOpsTeam'
@@ -275,7 +275,7 @@ jobs:
       - run:
           name: Send migration results to kvdb
           command: |
-            if grep -q "has been executed successfully." ~/project3b/backend/migrations_dump.txt
+            if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
              curl --insecure https://kvdb.io/GNw6ZWx7N7rhe2RXsvLew8/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
@@ -379,13 +379,13 @@ jobs:
           name: create an artifact.tar.gz of the backend
           command: |
             cd backend
-            npm install
+            npm i
             npm run build
             cd ..
             tar -C backend -czvf artifact.tar.gz .
-            mkdir -p ~/project3b/.circleci/ansible/files
-            mv artifact.tar.gz ~/project3b/.circleci/ansible/files/artifact.tar.gz
-            ls ~/project3b/.circleci/ansible/files
+            mkdir -p ~/project/.circleci/ansible/files
+            mv artifact.tar.gz ~/project/.circleci/ansible/files/artifact.tar.gz
+            ls ~/project/.circleci/ansible/files
       - run:
           name: Deploy backend
           command: |
