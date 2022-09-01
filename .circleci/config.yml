@@ -442,7 +442,7 @@ jobs:
             echo ${BACKEND_IP}
             echo backend-${CIRCLE_WORKFLOW_ID:0:7}
             echo ${API_URL}
-            if curl -v $API_URL/api/status | grep "ok"
+            if curl -s $API_URL/api/status | grep "ok"
             then
               exit 0
             else
@@ -453,7 +453,7 @@ jobs:
           command: |
             FRONTEND_WEBSITE=http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website.${AWS_DEFAULT_REGION}.amazonaws.com
             echo ${FRONTEND_WEBSITE}
-            if curl -v ${FRONTEND_WEBSITE} | grep "Welcome"
+            if curl -s ${FRONTEND_WEBSITE} | grep "Welcome"
             then
               exit 0
             else
