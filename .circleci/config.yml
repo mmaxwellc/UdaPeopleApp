@@ -277,6 +277,7 @@ jobs:
           command: |
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
+             cat ~/project/backend/migrations_dump.txt
              curl --insecure https://kvdb.io/GNw6ZWx7N7rhe2RXsvLew8/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
       # - slack/notify:
