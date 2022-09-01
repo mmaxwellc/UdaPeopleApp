@@ -347,7 +347,7 @@ jobs:
 
   deploy-backend:
     docker:
-      - image: python:3.7-alpine3.11
+      - image: cimg/base:stable
     steps:
       # Add ssh keys with fingerprint here
       # attach workspace
