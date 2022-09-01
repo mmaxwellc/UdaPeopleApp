@@ -1,27 +1,15 @@
 ---
-- name: "Creates backend app directory"
+- name: Creates backend directory
   file:
-    path: ~/backend
+    path: ~/backend/
     state: directory
 
-- name: "Unarchive backend files"
+- name: Copy and unarchive artifact
   unarchive:
-    src: artifact.tar.gz
+    src: ../../artifact.tar.gz
     dest: ~/backend
 
-- name: "Installing Node Dependencies"
+- name: Start PM2
   shell: |
-    cd ~/backend
-    npm i
-- name: "Executing Node app with PM2"
-  shell: |
-    cd ~/backend/
-    npm install
-    npm run build
-    forever start -c "ts-node -r tsconfig-paths/register -r dotenv/config src/main.ts" ./    
-    
-  register: execute_node
-
-- name: print message
-  debug:
-    msg: "{{ execute_node.stdout_lines }}"
+    cd ~/backend/dist
+    pm2 start main.js
