@@ -28,7 +28,7 @@ commands:
             echo ${SUCCESS}
             if(( ${SUCCESS}==1 )); 
             then
-             cd ~/project/backend
+             cd ~/project3b/backend
              npm install
              npm run migration:revert
             fi
@@ -219,7 +219,7 @@ jobs:
       - persist_to_workspace:
           root: ~/
           paths:
-            - project/.circleci/ansible/inventory.txt
+            - project3b/.circleci/ansible/inventory.txt
       # - slack/notify:
       #     event: fail
       #     mentions: '@DevOpsTeam'
@@ -275,7 +275,7 @@ jobs:
       - run:
           name: Send migration results to kvdb
           command: |
-            if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
+            if grep -q "has been executed successfully." ~/project3b/backend/migrations_dump.txt
             then
              curl --insecure https://kvdb.io/GNw6ZWx7N7rhe2RXsvLew8/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
@@ -360,7 +360,7 @@ jobs:
       - run:
            name: Install dependencies
            command: |
-              curl -fsSL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+              curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
               sudo apt install -y nodejs
               
               curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
@@ -379,13 +379,13 @@ jobs:
           name: create an artifact.tar.gz of the backend
           command: |
             cd backend
-            npm i
+            npm install
             npm run build
             cd ..
             tar -C backend -czvf artifact.tar.gz .
-            mkdir -p ~/project/.circleci/ansible/files
-            mv artifact.tar.gz ~/project/.circleci/ansible/files/artifact.tar.gz
-            ls ~/project/.circleci/ansible/files
+            mkdir -p ~/project3b/.circleci/ansible/files
+            mv artifact.tar.gz ~/project3b/.circleci/ansible/files/artifact.tar.gz
+            ls ~/project3b/.circleci/ansible/files
       - run:
           name: Deploy backend
           command: |
