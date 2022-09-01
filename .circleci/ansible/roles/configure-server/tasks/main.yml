@@ -1,12 +1,23 @@
----
-- name: "Add Node.js from source"
-  become: true
-  shell: |
-    curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
-- name: "Install Node.js 16"
-  become: true
+- name: "update apt packages."
+  become: yes
   apt:
-    name: ["nodejs"]
+    update_cache: yes
+
+- name: "upgrade packages"
+  become: yes
+  apt:
+    upgrade: yes
+
+
+- name: remove dependencies that are no longer required
+  become: yes
+  apt:
+    autoremove: yes
+
+- name: "install dependencies."
+  become: yes
+  apt:
+    name: ["nodejs", "npm"]
     state: latest
     update_cache: yes
 
@@ -14,13 +25,6 @@
   npm:
     name: pm2
     global: yes
-
-- name: "move env variables to /etc/profile.d/"
-  become: true
-  copy:
-    src: env.sh
-    #src: "{{playbook_dir}}/myenv/env.sh"
-    dest: /etc/profile.d/
 
 - name: "Install forever Globally to run node app"
   npm:
