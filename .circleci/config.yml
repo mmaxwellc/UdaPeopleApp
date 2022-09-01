@@ -360,7 +360,7 @@ jobs:
       - run:
            name: Install dependencies
            command: |
-              curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+              curl -fsSL https://deb.nodesource.com/setup_13.x | sudo -E bash -
               sudo apt install -y nodejs
               
               curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
@@ -444,9 +444,9 @@ jobs:
             echo ${API_URL}
             if curl -s $API_URL/api/status | grep "ok"
             then
-              exit 0
-            else
               exit 1
+            else
+              exit 0
             fi
       - run:
           name: Frontend smoke test.
