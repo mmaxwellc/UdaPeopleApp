@@ -4,5 +4,5 @@ https://github.com/mmaxwellc/UdaPeopleApp.git
 
 
 [URL02]
-http://udapeople-2c81a64.s3-website-us-east-1.amazonaws.com
+http://udapeople-cc44d60.s3-website-us-east-1.amazonaws.com
 
